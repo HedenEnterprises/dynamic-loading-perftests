@@ -50,11 +50,6 @@ int main(int argc, char const *argv[])
     }
 #endif
 
-    if (func == NULL) {
-        printf("%s\n", "Error finding module_func()");
-        return 2;
-    }
-
     unsigned int int i = 0;
     unsigned int r = 0;
 
@@ -65,6 +60,11 @@ int main(int argc, char const *argv[])
 #else
         int (* func)(char *) = module_func;
 #endif
+        
+        if (func == NULL) {
+            printf("%s\n", "Error finding module_func()");
+            return 2;
+        }
 
         r += func((char *)test_file);
     }
