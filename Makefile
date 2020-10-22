@@ -6,7 +6,7 @@ DLLIB=-ldl
 DEFSTATIC=-D TEST_STATIC
 DEFDYNAMIC=-D TEST_DYNAMIC
 
-TESTSCOUNT=50000
+TESTSCOUNT=50
 
 all: static dynamic module.so
 
@@ -20,7 +20,7 @@ module.so: module.c
 	gcc $(CFLAGS) module.c $(DEFDYNAMIC) -o $@ $(MODCFLAGS)
 
 generate-test-file:
-	base64 /dev/urandom | head -c 10000 > test-file
+	base64 /dev/urandom | head -c 100000000 > test-file
 	echo "found" >> test-file
 
 run-static: generate-test-file static
