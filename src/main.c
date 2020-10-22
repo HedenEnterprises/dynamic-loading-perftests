@@ -1,23 +1,13 @@
-/*
-base64 /dev/urandom | head -c 100000000 > text.file
-echo "found" >> text.file
-*/
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <dlfcn.h>
-
-/*
-gcc -O0 -g3 main.c module.c -D TEST_STATIC -o static
-
-gcc -fPIC -O0 -g3 main.c -D TEST_DYNAMIC -o dynamic -ldl
-gcc -fPIC -O0 -g3 main.c -D TEST_DYNAMIC -o dynamic -shared
-*/
+#include <string.h>
 
 
 #ifdef TEST_STATIC
 
-int module_func(const char * file);
+int module_func(char * file);
 
 #endif
 
@@ -53,20 +43,27 @@ int main(int argc, char const *argv[])
     }
 
     void * handle = dlopen(module, dlopen_flags);
-    int (* func)(const char *) = dlsym(handle, "module_func");
+
+    if (handle == NULL) {
+        printf("Error opening module: %s\n", module);
+        return 1;
+    }
+
+    int (* func)(char *) = dlsym(handle, "module_func");
 #else
-    int (* func)(const char *) = module_func;
+    int (* func)(char *) = module_func;
 #endif
+
+    if (func == NULL) {
+        printf("%s\n", "Error finding module_func()");
+        return 2;
+    }
 
     int i = 0;
 
     for (i = 0; i < test_count; i++) {
-        char * file = strdup(test_file);
-        printf("%d,", func(file));
-        free(file);
+        printf("%d,", func((char *)test_file));
     }
-
-    printf("%s\n", "");
 
     return 0;
 }

@@ -1,34 +1,39 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+
+/* base64 (we use to generate test-file) max line length is 76,
+   so +1 for null, and +5 for 'found' */
+#define BUFFER_SIZE 76 + 1 + 5
+
 
 int module_func(char * file)
 {
     int return_code = -1;
+    char str[BUFFER_SIZE] = { 0 };
+    char * pos = NULL;
+
+    unsigned int line = 0;
+    unsigned int col  = 0;
 
     FILE * fp = fopen(file, "r");
+
     if (fp == NULL) {
         return return_code;
     }
 
-    size_t read = 0;
-    size_t pos = 0;
-    char buffer[5];
+    while ((fgets(str, BUFFER_SIZE, fp)) != NULL) {
+        line += 1;
 
-    while (1) {
+        pos = strstr(str, "found");
 
-        read = fread(buffer, 1, 5, fp);
-        pos += read - 4;
-
-        if (feof(fp)) {
-            break;
-        }
-
-        if (buffer[0] == 'f' && buffer[0] == 'o' && buffer[0] == 'u' && buffer[0] == 'n' && buffer[0] == 'd') {
-            return_code = pos - 1;
+        if (pos != NULL) {
+            col = (pos - str);
         }
     }
 
     fclose(fp);
-    return return_code;
+    return line * 77 + col;
 }
