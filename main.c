@@ -50,7 +50,7 @@ int main(int argc, char const *argv[])
     }
 #endif
 
-    unsigned int int i = 0;
+    unsigned int i = 0;
     unsigned int r = 0;
 
     for (i = 0; i < test_count; i++) {
@@ -60,7 +60,7 @@ int main(int argc, char const *argv[])
 #else
         int (* func)(char *) = module_func;
 #endif
-        
+
         if (func == NULL) {
             printf("%s\n", "Error finding module_func()");
             return 2;
