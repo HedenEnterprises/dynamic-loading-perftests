@@ -6,6 +6,8 @@ DLLIB=-ldl
 DEFSTATIC=-D TEST_STATIC
 DEFDYNAMIC=-D TEST_DYNAMIC
 
+TESTSCOUNT=500
+
 all: static dynamic module.so
 
 static: main.c module.c
@@ -21,8 +23,13 @@ generate-test-file:
 	base64 /dev/urandom | head -c 100000000 > test-file
 	echo "found" >> test-file
 
-run-static:
-	./static 10 test-file
+run-static: generate-test-file static
+	./static $(TESTSCOUNT) test-file
 
-run-dynamic:
-	./dynamic 10 test-file module.so 1
+run-dynamic: run-dynamic-lazy
+
+run-dynamic-lazy: generate-test-file dynamic module.so
+	./dynamic $(TESTSCOUNT) test-file ./module.so 1
+
+run-dynamic-now: generate-test-file dynamic module.so
+	./dynamic $(TESTSCOUNT) test-file ./module.so 2

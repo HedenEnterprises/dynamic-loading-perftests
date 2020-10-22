@@ -1,0 +1,9 @@
+language: c
+script:
+  - make all
+  - echo "RUN STATIC" && echo "***********************"
+  - time make run-static
+  - echo "RUN DYNAMIC (RTLD_LAZY)" && echo "***********************"
+  - time make run-dynamic-lazy
+  - echo "RUN DYNAMIC (RTLD_NOW)" && echo "***********************"
+  - time make run-dynamic-now
