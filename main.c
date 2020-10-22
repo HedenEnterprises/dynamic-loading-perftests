@@ -48,10 +48,6 @@ int main(int argc, char const *argv[])
         printf("Error opening module: %s\n", module);
         return 1;
     }
-
-    int (* func)(char *) = dlsym(handle, "module_func");
-#else
-    int (* func)(char *) = module_func;
 #endif
 
     if (func == NULL) {
@@ -59,11 +55,21 @@ int main(int argc, char const *argv[])
         return 2;
     }
 
-    int i = 0;
+    unsigned int int i = 0;
+    unsigned int r = 0;
 
     for (i = 0; i < test_count; i++) {
-        printf("%d,", func((char *)test_file));
+
+#ifdef TEST_DYNAMIC
+        int (* func)(char *) = dlsym(handle, "module_func");
+#else
+        int (* func)(char *) = module_func;
+#endif
+
+        r += func((char *)test_file);
     }
+
+    printf("%d\n", r);
 
     return 0;
 }
