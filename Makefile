@@ -1,5 +1,5 @@
 
-CFLAGS=-O0 -g3
+CFLAGS=-O3
 MODCFLAGS=-fPIC -shared
 DLLIB=-ldl
 
